@@ -165,8 +165,13 @@ VENDOR_MODULES := $(shell find . -name vendor -prune -o -name go.mod -printf "%h
 
 # [golangci-lint] validates Go code in the project
 golangci-lint: $(VENDOR_MODULES)
+ifneq (,$(shell find . -name '*.go'))
+	echo $(wildcard **/*.go)
 	golangci-lint linters
 	golangci-lint run --timeout 10m
+else
+	@echo 'There are no Go files to lint; if this is incorrect, write some Go.'
+endif
 
 # [packagedoc-lint] checks that the package docs don’t include the SPDX header
 packagedoc-lint:
